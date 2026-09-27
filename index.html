@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full select-none overflow-hidden">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chère Sisi,</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Plus+Jakarta+Sans:wght@600;700;800&family=Caveat:wght@600;700&family=Great+Vibes&family=Pacifico&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            touch-action: manipulation;
+        }
+        .font-love {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* Animated romantic gradient background */
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .animated-bg {
+            background: linear-gradient(-45deg, #ff4b6e, #ff758c, #ff7eb3, #e0c3fc, #f43f5e, #fda4af);
+            background-size: 400% 400%;
+            animation: gradientMove 12s ease infinite;
+        }
+
+        /* Continuous floating background hearts */
+        @keyframes floatUpContinuous {
+            0% {
+                transform: translateY(0) translateX(0) scale(var(--start-scale, 1)) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: var(--max-opacity, 0.85); }
+            90% { opacity: var(--max-opacity, 0.85); }
+            100% {
+                transform: translateY(-115vh) translateX(var(--drift-x, 30px)) scale(var(--end-scale, 1.2)) rotate(var(--rotation, 360deg));
+                opacity: 0;
+            }
+        }
+
+        .bg-heart {
+            position: absolute;
+            pointer-events: none;
+            animation: floatUpContinuous linear infinite;
+            will-change: transform, opacity;
+        }
+
+        .escaping-no-btn {
+            transition: left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* Movement animation variations for the NO button */
+        @keyframes animSpin {
+            0% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.25) rotate(360deg); }
+            100% { transform: scale(1) rotate(720deg); }
+        }
+        .move-spin { animation: animSpin 0.5s ease-in-out; }
+
+        @keyframes animBounce {
+            0%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-25px) scale(1.1); }
+            60% { transform: translateY(10px) scale(0.9); }
+        }
+        .move-bounce { animation: animBounce 0.5s ease-in-out; }
+
+        @keyframes animShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-15px) rotate(-10deg); }
+            40% { transform: translateX(15px) rotate(10deg); }
+            60% { transform: translateX(-10px) rotate(-5deg); }
+            80% { transform: translateX(10px) rotate(5deg); }
+        }
+        .move-shake { animation: animShake 0.4s ease-in-out; }
+
+        @keyframes animJump {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.5) translateY(-35px); }
+            100% { transform: scale(1) translateY(0); }
+        }
+        .move-jump { animation: animJump 0.5s ease-in-out; }
+
+        @keyframes animFlash {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.7); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .move-flash { animation: animFlash 0.4s ease-in-out; }
+
+        /* Click burst heart particles */
+        @keyframes burstParticle {
+            0% {
+                transform: translate(0, 0) scale(1.2) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(0) rotate(270deg);
+                opacity: 0;
+            }
+        }
+
+        .click-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 100;
+            animation: burstParticle 0.7s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        /* Heart glow pulse effect */
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.12); opacity: 1; }
+        }
+        .glow-pulse {
+            animation: pulseGlow 2s infinite ease-in-out;
+        }
+
+        @keyframes spinVinyl {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-vinyl {
+            animation: spinVinyl 3.5s linear infinite;
+        }
+    </style>
+</head>
+
+<body class="h-full w-full animated-bg overflow-hidden relative flex flex-col items-center justify-between p-4">
+
+    <!-- HEADER TITLE -->
+    <header class="relative z-20 pt-1 text-center">
+        <h1 class="text-xs sm:text-sm uppercase tracking-widest text-white/90 font-bold bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/30 shadow-sm inline-block">
+            💖 Chère Sisi, 💖
+        </h1>
+    </header>
+
+    <!-- Container for floating background hearts -->
+    <div id="hearts-background" class="absolute inset-0 overflow-hidden pointer-events-none z-0"></div>
+
+    <!-- SONG 1: Centered directly below the header (Baby Be Mine) -->
+    <div class="song-card fixed top-16 left-1/2 -translate-x-1/2 z-10 opacity-80 -rotate-2 w-32 sm:w-36 bg-zinc-950/90 backdrop-blur-md border border-white/20 rounded-lg p-2 text-white shadow-xl transition-all duration-300 hover:rotate-0 hover:opacity-100 hover:scale-105 pointer-events-auto">
+        <div class="relative w-full aspect-square rounded overflow-hidden mb-1.5 bg-zinc-900">
+            <img src="https://i.scdn.co/image/ab67616d0000b2734121faee8df82c52620ab410" 
+                 alt="Baby Be Mine" 
+                 onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/en/5/55/Michael_Jackson_-_Thriller.png';"
+                 class="w-full h-full object-cover rounded">
+        </div>
+        <div class="flex items-center justify-between gap-1">
+            <div class="min-w-0 flex-1">
+                <h3 class="text-[11px] font-bold text-white leading-tight truncate">Baby Be Mine</h3>
+                <p class="text-[9px] text-zinc-400 font-medium truncate">Michael Jackson</p>
+            </div>
+            <!-- Animated Vinyl Badge -->
+            <div class="relative w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center animate-spin-vinyl shrink-0">
+                <div class="w-2 h-2 rounded-full bg-gradient-to-tr from-amber-500 to-rose-500 border border-white/50"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SONG 2: Top-Right (Liberian Girl - Bad Album) -->
+    <div class="song-card fixed top-10 right-2 sm:right-6 z-10 opacity-75 rotate-6 w-32 sm:w-36 bg-zinc-950/90 backdrop-blur-md border border-white/20 rounded-lg p-2 text-white shadow-xl transition-all duration-300 hover:rotate-0 hover:opacity-100 hover:scale-105 pointer-events-auto">
+        <div class="relative w-full aspect-square rounded overflow-hidden mb-1.5 bg-zinc-900">
+            <img src="https://i.scdn.co/image/ab67616d0000b27376c3f309a96e95d90ee2e646" 
+                 alt="Liberian Girl" 
+                 onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/en/5/51/Michael_Jackson_-_Bad.png';"
+                 class="w-full h-full object-cover rounded">
+        </div>
+        <div class="flex items-center justify-between gap-1">
+            <div class="min-w-0 flex-1">
+                <h3 class="text-[11px] font-bold text-white leading-tight truncate">Liberian Girl</h3>
+                <p class="text-[9px] text-zinc-400 font-medium truncate">Michael Jackson</p>
+            </div>
+            <!-- Animated Vinyl Badge -->
+            <div class="relative w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center animate-spin-vinyl shrink-0">
+                <div class="w-2 h-2 rounded-full bg-gradient-to-tr from-rose-600 to-zinc-800 border border-white/50"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SONG 3: Top-Left (The Girl Is Mine) -->
+    <div class="song-card fixed top-10 left-2 sm:left-6 z-10 opacity-75 rotate-3 w-32 sm:w-36 bg-zinc-950/90 backdrop-blur-md border border-white/20 rounded-lg p-2 text-white shadow-xl transition-all duration-300 hover:rotate-0 hover:opacity-100 hover:scale-105 pointer-events-auto">
+        <div class="relative w-full aspect-square rounded overflow-hidden mb-1.5 bg-zinc-900">
+            <img src="https://i.scdn.co/image/ab67616d0000b2734121faee8df82c52620ab410" 
+                 alt="The Girl Is Mine" 
+                 onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/en/5/55/Michael_Jackson_-_Thriller.png';"
+                 class="w-full h-full object-cover rounded">
+        </div>
+        <div class="flex items-center justify-between gap-1">
+            <div class="min-w-0 flex-1">
+                <h3 class="text-[11px] font-bold text-white leading-tight truncate">The Girl Is Mine</h3>
+                <p class="text-[9px] text-zinc-400 font-medium truncate">Michael Jackson</p>
+            </div>
+            <!-- Animated Vinyl Badge -->
+            <div class="relative w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center animate-spin-vinyl shrink-0">
+                <div class="w-2 h-2 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-500 border border-white/50"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SONG 4: Bottom-Left (The Lady in My Life) -->
+    <div class="song-card fixed bottom-10 left-2 sm:left-6 z-10 opacity-75 rotate-6 w-32 sm:w-36 bg-zinc-950/90 backdrop-blur-md border border-white/20 rounded-lg p-2 text-white shadow-xl transition-all duration-300 hover:rotate-0 hover:opacity-100 hover:scale-105 pointer-events-auto">
+        <div class="relative w-full aspect-square rounded overflow-hidden mb-1.5 bg-zinc-900">
+            <img src="https://i.scdn.co/image/ab67616d0000b2734121faee8df82c52620ab410" 
+                 alt="The Lady in My Life" 
+                 onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/en/5/55/Michael_Jackson_-_Thriller.png';"
+                 class="w-full h-full object-cover rounded">
+        </div>
+        <div class="flex items-center justify-between gap-1">
+            <div class="min-w-0 flex-1">
+                <h3 class="text-[10px] font-bold text-white leading-tight whitespace-normal break-words">The Lady in My Life</h3>
+                <p class="text-[9px] text-zinc-400 font-medium truncate">Michael Jackson</p>
+            </div>
+            <!-- Animated Vinyl Badge -->
+            <div class="relative w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center animate-spin-vinyl shrink-0">
+                <div class="w-2 h-2 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 border border-white/50"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SONG 5: Bottom-Right (Dirty Diana - Bad Album) -->
+    <div class="song-card fixed bottom-10 right-2 sm:right-6 z-10 opacity-75 -rotate-3 w-32 sm:w-36 bg-zinc-950/90 backdrop-blur-md border border-white/20 rounded-lg p-2 text-white shadow-xl transition-all duration-300 hover:rotate-0 hover:opacity-100 hover:scale-105 pointer-events-auto">
+        <div class="relative w-full aspect-square rounded overflow-hidden mb-1.5 bg-zinc-900">
+            <img src="https://i.scdn.co/image/ab67616d0000b27376c3f309a96e95d90ee2e646" 
+                 alt="Dirty Diana - Bad Album" 
+                 onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/en/5/51/Michael_Jackson_-_Bad.png';"
+                 class="w-full h-full object-cover rounded">
+        </div>
+        <div class="flex items-center justify-between gap-1">
+            <div class="min-w-0 flex-1">
+                <h3 class="text-[11px] font-bold text-white leading-tight truncate">Dirty Diana</h3>
+                <p class="text-[9px] text-zinc-400 font-medium truncate">Michael Jackson</p>
+            </div>
+            <!-- Animated Vinyl Badge -->
+            <div class="relative w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center animate-spin-vinyl shrink-0">
+                <div class="w-2 h-2 rounded-full bg-gradient-to-tr from-red-600 to-zinc-900 border border-white/50"></div>
+            </div>
+        </div>
+    </div>
+
+    <main class="relative z-20 w-full max-w-xs sm:max-w-md px-2 my-auto">
+        
+        <!-- CARD STATE 1: Question Card -->
+        <div id="question-card" class="bg-white/85 backdrop-blur-xl border border-white/90 rounded-2xl p-6 shadow-xl shadow-rose-950/20 text-center relative overflow-visible transition-all duration-300">
+            
+            <!-- Heart Header Icon -->
+            <div class="relative w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <div class="absolute inset-0 bg-rose-500/30 rounded-full blur-md glow-pulse"></div>
+                <div class="w-16 h-16 bg-gradient-to-tr from-rose-500 to-pink-500 rounded-full flex items-center justify-center text-2xl text-white shadow-md shadow-rose-500/30">
+                    <i class="fa-solid fa-heart animate-bounce"></i>
+                </div>
+            </div>
+
+            <!-- Main Question Title -->
+            <h2 class="text-3xl sm:text-4xl font-bold text-rose-950 font-love mb-6 drop-shadow-sm">
+                Tu me pardonnes ?
+            </h2>
+
+            <!-- Buttons Area -->
+            <div id="buttons-area" class="relative min-h-[50px] flex items-center justify-center gap-3">
+                
+                <!-- YES BUTTON -->
+                <button id="yes-btn" onclick="handleYesClick(event)" class="group relative px-6 py-2.5 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 active:scale-95 text-white font-bold text-base rounded-xl shadow-md shadow-rose-500/30 transition-all duration-200 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-heart text-xs transition-transform group-hover:scale-125"></i>
+                    <span>Oui</span>
+                </button>
+
+                <!-- NO BUTTON (NEVER DISAPPEARS, REPOSITIONABLE ON CLICK) -->
+                <button id="no-btn" 
+                        onclick="handleNoInteraction(event)" 
+                        class="group relative px-5 py-2.5 bg-white/95 hover:bg-white active:scale-95 text-rose-900 font-semibold text-sm rounded-xl border border-rose-200 shadow-sm transition-transform duration-200 flex items-center justify-center gap-2 z-30">
+                    <i class="fa-solid fa-heart-crack text-rose-400 text-xs transition-transform group-hover:scale-125"></i>
+                    <span id="no-btn-text">Non</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- CARD STATE 2: Happy Forgiveness State -->
+        <div id="happy-card" class="hidden bg-white/95 backdrop-blur-2xl border border-white rounded-2xl p-5 sm:p-6 shadow-xl shadow-rose-950/30 text-center relative max-h-[82vh] overflow-y-auto animate-in fade-in zoom-in duration-300">
+            
+            <div class="relative w-16 h-16 mx-auto mb-3 flex items-center justify-center">
+                <div class="absolute inset-0 bg-pink-500/30 rounded-full blur-xl animate-pulse"></div>
+                <div class="w-16 h-16 bg-gradient-to-tr from-rose-500 via-pink-500 to-fuchsia-500 rounded-full flex items-center justify-center text-3xl text-white shadow-lg shadow-rose-500/40">
+                    <i class="fa-solid fa-face-smile-beam animate-bounce"></i>
+                </div>
+            </div>
+
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-rose-950 font-love mb-3">
+                Merciiii ! ❤️🥰
+            </h2>
+
+            <!-- Message 1 -->
+            <p class="text-rose-950 font-bold text-xs sm:text-sm mb-2.5 leading-relaxed bg-rose-50/90 p-3 rounded-xl border border-rose-200/70 text-left shadow-sm">
+                Enfinnnn t'as accepté de m'excuser ! Promis je ferai attention à ce que je fais désormais, je clique plus sur aucun profil. 🙏❤️
+            </p>
+
+            <!-- Message 2 -->
+            <p class="text-rose-900 font-semibold text-xs sm:text-sm mb-4 leading-relaxed bg-pink-50/80 p-2.5 rounded-xl border border-pink-200/60 text-left shadow-sm">
+                Maintenant qu'on a fait la paix, tu ne me traites plus de bizarre... au moins moi content ! 😉✨
+            </p>
+
+            <!-- List of Dates -->
+            <div class="text-left bg-gradient-to-b from-white to-rose-50/50 p-3.5 rounded-xl border border-rose-200/80 mb-5 shadow-sm">
+                <p class="text-rose-950 font-extrabold text-xs sm:text-sm mb-3 flex items-center gap-1.5">
+                    <i class="fa-solid fa-sparkles text-amber-500"></i>
+                    <span>Voici ce que j'ai à te proposer pour qu'on passe du bon temps :</span>
+                </p>
+
+                <ul class="space-y-2 text-xs sm:text-sm text-rose-900 font-medium">
+                    <li class="flex items-center gap-2.5 bg-white/90 p-2.5 rounded-lg border border-rose-100 shadow-sm">
+                        <span class="text-base">🎬</span>
+                        <span>Un date cinéma Resident Evil</span>
+                    </li>
+                    <li class="flex items-center gap-2.5 bg-white/90 p-2.5 rounded-lg border border-rose-100 shadow-sm">
+                        <span class="text-base">🍿</span>
+                        <span>Un date cinéma pour Malfaisante</span>
+                    </li>
+                    <li class="flex items-center gap-2.5 bg-white/90 p-2.5 rounded-lg border border-rose-100 shadow-sm">
+                        <span class="text-base">🧙‍♂️</span>
+                        <span>Date Harry Potter pendant les vacances dans la voiture</span>
+                    </li>
+                    <li class="flex items-center gap-2.5 bg-white/90 p-2.5 rounded-lg border border-rose-100 shadow-sm">
+                        <span class="text-base">⛰️</span>
+                        <span>Un date montagne, on va balader</span>
+                    </li>
+                    <li class="flex items-center gap-2.5 bg-white/90 p-2.5 rounded-lg border border-rose-100 shadow-sm">
+                        <span class="text-base">🍃</span>
+                        <span>Un date où on se voit, on se pose sur un banc, on discute <span class="font-bold text-rose-600">#LesChosesSimples</span></span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Recommencer Button -->
+            <button onclick="resetApp()" class="w-full py-2.5 px-4 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold text-sm rounded-xl shadow-md shadow-rose-500/20 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-rotate-right"></i>
+                <span>Recommencer 🔄</span>
+            </button>
+        </div>
+
+    </main>
+
+    <footer class="relative z-20 pb-2 text-center text-xs text-white/70">
+        J'ai des bonbons et des ptites surprises pour toi d'ailleurs ça a pas bougé 🍬✨
+    </footer>
+
+    <script>
+        /* Array of humorous and desperate alternative text for the "Non" button */
+        const noVariations = [
+            "Non",
+            "Tu es sûre ?",
+            "Vraiment pas ?",
+            "S'il te plaît 🥺",
+            "Réessaie encore !",
+            "Même pas un peu ?",
+            "Impossible !",
+            "Réfléchis bien...",
+            "Opération impossible 😜",
+            "Oups, trop tard !",
+            "Allez dis ouiii ! 🥰",
+            "Mauvais bouton !",
+            "Erreur 404 : Non introuvable",
+            "Toujours pas ? 🥺",
+            "Dernière chance ?",
+            "S'il te plaîîîîît !",
+            "Tu rigoles ?",
+            "Regarde à côté !"
+        ];
+
+        /* List of movement style classes */
+        const moveStyles = ['move-spin', 'move-bounce', 'move-shake', 'move-jump', 'move-flash'];
+
+        let noClickCount = 0;
+        let isNoBtnFloating = false;
+
+        function createBackgroundHearts() {
+            const container = document.getElementById('hearts-background');
+            container.innerHTML = '';
+            
+            // Mix of heart icons and flower elements
+            const heartTypes = ['fa-heart', 'fa-heart-pulse', 'fa-heart-circle-bolt'];
+            const flowerEmojis = ['💐', '🌸', '🌷', '🌹', '🌺', '🌼'];
+            
+            const colors = [
+                'text-rose-200', 'text-pink-200', 'text-rose-100', 
+                'text-pink-100', 'text-white', 'text-fuchsia-200'
+            ];
+            
+            const totalElements = 200;
+
+            for (let i = 0; i < totalElements; i++) {
+                const rand = Math.random();
+                let el;
+
+                if (rand < 0.35) { 
+                    // ~35% Bouquets et fleurs
+                    el = document.createElement('span');
+                    el.textContent = flowerEmojis[Math.floor(Math.random() * flowerEmojis.length)];
+                    el.className = 'bg-heart inline-block select-none';
+                } else { 
+                    // ~65% Cœurs animés
+                    el = document.createElement('i');
+                    const randomIcon = heartTypes[Math.floor(Math.random() * heartTypes.length)];
+                    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                    el.className = `fa-solid ${randomIcon} ${randomColor} bg-heart`;
+                }
+
+                const size = Math.random() * 16 + 12; // 12px to 28px
+                const left = Math.random() * 95; 
+                const startTop = 105 + Math.random() * 10; 
+                const duration = Math.random() * 8 + 6; 
+                const delay = -(Math.random() * duration); 
+                const driftX = (Math.random() - 0.5) * 140; 
+                const rotation = (Math.random() - 0.5) * 360;
+                const maxOpacity = Math.random() * 0.4 + 0.4;
+
+                el.style.fontSize = `${size}px`;
+                el.style.left = `${left}%`;
+                el.style.top = `${startTop}%`;
+                el.style.animationDuration = `${duration}s`;
+                el.style.animationDelay = `${delay}s`;
+                el.style.setProperty('--drift-x', `${driftX}px`);
+                el.style.setProperty('--rotation', `${rotation}deg`);
+                el.style.setProperty('--max-opacity', maxOpacity);
+                el.style.setProperty('--start-scale', Math.random() * 0.3 + 0.7);
+                el.style.setProperty('--end-scale', Math.random() * 0.4 + 1);
+
+                container.appendChild(el);
+            }
+        }
+
+        function relocateNoButton() {
+            const noBtn = document.getElementById('no-btn');
+            const noBtnText = document.getElementById('no-btn-text');
+
+            // Switch text variation infinitely
+            noClickCount++;
+            const textIndex = noClickCount % noVariations.length;
+            noBtnText.textContent = noVariations[textIndex];
+
+            // Get current button position before moving
+            const currentRect = noBtn.getBoundingClientRect();
+
+            // Attach button directly to body on first click to break out of card stacking context
+            if (!isNoBtnFloating) {
+                document.body.appendChild(noBtn);
+                noBtn.style.position = 'fixed';
+                noBtn.style.left = `${currentRect.left}px`;
+                noBtn.style.top = `${currentRect.top}px`;
+                noBtn.style.zIndex = '50';
+                noBtn.classList.add('escaping-no-btn');
+                isNoBtnFloating = true;
+            }
+
+            // Remove existing movement animation classes
+            moveStyles.forEach(style => noBtn.classList.remove(style));
+
+            // Apply a random movement animation class
+            const randomStyle = moveStyles[Math.floor(Math.random() * moveStyles.length)];
+            void noBtn.offsetWidth;
+            noBtn.classList.add(randomStyle);
+
+            // Compute bounds guaranteeing button stays strictly inside screen
+            const btnWidth = noBtn.offsetWidth || 120;
+            const btnHeight = noBtn.offsetHeight || 40;
+            const margin = 20;
+
+            const maxX = Math.max(margin, window.innerWidth - btnWidth - margin);
+            const maxY = Math.max(margin, window.innerHeight - btnHeight - margin);
+
+            // Get all obstacle elements (central question card + all song cards)
+            const obstacleElements = [
+                document.getElementById('question-card'),
+                ...document.querySelectorAll('.song-card')
+            ];
+
+            const obstacles = obstacleElements
+                .filter(el => el && el.offsetParent !== null)
+                .map(el => el.getBoundingClientRect());
+
+            const padding = 15; // Safe distance around obstacles
+
+            // Force new position to avoid all obstacles and maintain a good distance
+            let randomX, randomY;
+            let attempts = 0;
+            do {
+                randomX = Math.floor(Math.random() * (maxX - margin)) + margin;
+                randomY = Math.floor(Math.random() * (maxY - margin)) + margin;
+                attempts++;
+
+                // Check if button overlaps with ANY obstacle (central card or song cards)
+                const overlapsAny = obstacles.some(rect => {
+                    return !(
+                        randomX + btnWidth < rect.left - padding ||
+                        randomX > rect.right + padding ||
+                        randomY + btnHeight < rect.top - padding ||
+                        randomY > rect.bottom + padding
+                    );
+                });
+
+                const hasSufficientDistance = Math.hypot(randomX - currentRect.left, randomY - currentRect.top) >= 120;
+
+                // Accept position if it's completely outside all card areas
+                if (!overlapsAny && (hasSufficientDistance || attempts > 50)) {
+                    break;
+                }
+            } while (attempts < 100);
+
+            noBtn.style.left = `${randomX}px`;
+            noBtn.style.top = `${randomY}px`;
+            
+            // Ensure button is always 100% visible
+            noBtn.style.display = 'flex';
+            noBtn.style.visibility = 'visible';
+            noBtn.style.opacity = '1';
+        }
+
+        /* Handle NO button interaction STRICTLY ON CLICK */
+        function handleNoInteraction(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            createHeartParticleBurst(event.clientX, event.clientY, ['#ef4444', '#f43f5e', '#fda4af']);
+            relocateNoButton();
+        }
+
+        function handleYesClick(event) {
+            createHeartParticleBurst(event.clientX, event.clientY, ['#f43f5e', '#ec4899', '#d946ef', '#ffffff', '#fb7185']);
+
+            // Celebration confetti burst
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 120,
+                    spread: 80,
+                    origin: { y: 0.6 }
+                });
+            }
+
+            // Hide NO button only when clicking YES
+            const noBtn = document.getElementById('no-btn');
+            noBtn.style.display = 'none';
+
+            // Show celebration card
+            document.getElementById('question-card').classList.add('hidden');
+            document.getElementById('happy-card').classList.remove('hidden');
+        }
+
+        /* Reset App State */
+        function resetApp() {
+            noClickCount = 0;
+            isNoBtnFloating = false;
+
+            const noBtn = document.getElementById('no-btn');
+            const noBtnText = document.getElementById('no-btn-text');
+
+            // Attach NO button back inside the card's button container
+            document.getElementById('buttons-area').appendChild(noBtn);
+
+            // Reset NO button styles and position
+            noBtn.style.display = 'flex';
+            noBtn.style.visibility = 'visible';
+            noBtn.style.opacity = '1';
+            noBtn.style.position = 'relative';
+            noBtn.style.left = 'auto';
+            noBtn.style.top = 'auto';
+            noBtn.classList.remove('escaping-no-btn');
+            moveStyles.forEach(style => noBtn.classList.remove(style));
+            noBtnText.textContent = "Non";
+
+            // Reset cards view
+            document.getElementById('happy-card').classList.add('hidden');
+            document.getElementById('question-card').classList.remove('hidden');
+        }
+
+        /* Interactive particle burst on click */
+        function createHeartParticleBurst(x, y, colorPalette) {
+            const particleCount = 16;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('i');
+                particle.className = 'fa-solid fa-heart click-particle';
+                
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                particle.style.color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+                particle.style.fontSize = `${Math.random() * 14 + 10}px`;
+
+                const angle = (i / particleCount) * 2 * Math.PI + (Math.random() * 0.4 - 0.2);
+                const distance = Math.random() * 100 + 30;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+
+                particle.style.setProperty('--tx', `${tx}px`);
+                particle.style.setProperty('--ty', `${ty}px`);
+
+                document.body.appendChild(particle);
+
+                setTimeout(() => particle.remove(), 700);
+            }
+        }
+
+        // Initialize background hearts on DOM load
+        window.addEventListener('DOMContentLoaded', () => {
+            createBackgroundHearts();
+        });
+    </script>
+</body>
+</html>
